@@ -1,0 +1,59 @@
+Assumptions:
+1. ID is the primary key and it is unique. Repeatitive values are possible in Name and Salary field
+2. Sql statments should follow exact identation of spaces and words. (i.e) There should be only one space between the keywords in the sql statement. 
+	Eg. Select * where ID > 100
+3. Order by function can be done only on one column.
+
+Limitation:
+1. More than one columns in order by is not allowed. 
+2. order by is always ascending. No descending operation.
+
+
+Extra feature:
+1. Select ID,Name is also possible but, the sequence in which the columns needs to be retrieved should be same as the sequence in which the columns are present in the database.
+Name,ID  -> wrong(Limitation in current implementation)
+ID,Name -> correct
+
+
+Reference code taken from online: 
+1. Link from which reference code for B+ tree implementation
+ https://en.wikibooks.org/wiki/Algorithm_Implementation/Trees/B%2B_tree
+
+Implementation Details:
+
+i) Organization of Files:
+	Packages
+		com.db.employee - contains all the information regarding the employee db related operations
+			Classes
+				1. DBEmployeeSystem - This class is of type DBSystem and helps in processing of the queries related to Employee DB
+				2. Employee - Employee POJO class 
+				3. StorageEmployee - This mantains the datastructurs to store the employee records.
+		com.db - contains all the generic implemenation and interface for the required for this database
+			Classes
+				1. BxTree - B+ tree datastrucute. This helps in storing columns in which operations like >,<,<=,>= will be performed.  
+				2. DBRequest - Processing the query string to DBRequest 
+				3. DBResponse - Contains the DBResponse
+				4. DBSystem - Interface class which every DBSystem has to implement.
+				5. EndUser -  Main EndUser class to talk with the end user.
+				6. Storage - Interface class which every Storage class has to implement. 
+
+ii) DataStructures used:
+
+	HashTables --> this is used for the search of records with = and != queries.
+	B+ Tree --> this is used to search of records with other comparator operators like >,<,<=,>=
+
+iii) Sequence of operation being held.
+	1. User enters the File path of the DB file to get the Table records.
+		
+		Based on the file path, the DB file is parsed and the data retrieved is stored in the datastructures. In case of Employees example, ID and Salary is is stored in B+ tree while Name is stored in Hashmap. ( Based on operation that will be performed on them ) --> StorageEmployee.class 
+		
+	2. Next, the user enters the query and waits for the response
+		
+		The query is parsed and validated (Validation of query is done using regex and length of the query String ), in the end DBReques object is created.(DBRequest.class). Next based on the operation and the column, the requested operation is carried out( If it is ID < 30, B+Tree having ID has the key is first taken, the then less than operation is carried out on it. ) Next, if the query has "order by" clause. the order by operation is carried out retrieved records. Next, if the query is requesting only certain columns then the DBResponse Object is created based on requested columns. Finally, the DBResponse is sent to the End user.  
+		
+	3. Now, the user can once again repeat the above steps or can exit from the system
+	
+		
+		
+
+				
